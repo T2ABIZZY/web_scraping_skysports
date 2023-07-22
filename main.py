@@ -17,7 +17,7 @@ dates=[]
 competitions=[]
 links=[]
 stadiums=[]
-attendance=[]
+attendances=[]
 time=[]
 day=[]
 home_possession=[]
@@ -48,6 +48,7 @@ home_fouls=[]
 away_fouls=[]
 home_yellow=[]
 home_red=[]
+pattern = r'\d{1,3}(?:,\d{3})*'
 
 
 for match in matches:
@@ -67,17 +68,21 @@ for index,link in enumerate(links):
         html_text = requests.get(link).text
         soup = BeautifulSoup(html_text, 'lxml')
         temp = soup.find('a',{"class":"sdc-site-localnav__item-link","aria-current":"true","data-role":"nav-item-links"}).attrs['href'].replace("report","stats")
-
-        html_text = requests.get(sky+temp).text
-        soup = BeautifulSoup(html_text, 'lxml')
-
         header=soup.find("div",{"class":"sdc-site-match-header__detail"})
         time = header.find("time",{"class":"sdc-site-match-header__detail-time"}).text
         stadium = header.find("span",{"class":"sdc-site-match-header__detail-venue sdc-site-match-header__detail-venue--with-seperator"}).text
         attendance = header.find("span",{"class":"sdc-site-match-header__detail-attendance"}).text
-        print(attendance)
+        attendance = re.search(pattern, attendance)
+        attendance = attendance.group()
+        attendances.append(attendance)
         stadiums.append(stadium)
         day.append(time[0:6])
+        html_text = requests.get(sky+temp).text
+        soup = BeautifulSoup(html_text, 'lxml')
+        stats=soup.find("div",{"class":"sdc-site-concertina-block__body","id":"match-stats"})
+
+
+
 
 
 with open("liverpool.csv","w",newline='') as file:
