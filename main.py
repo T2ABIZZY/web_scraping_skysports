@@ -18,7 +18,7 @@ competitions=[]
 links=[]
 stadiums=[]
 attendances=[]
-time=[]
+clock=[]
 day=[]
 home_possessions=[]
 away_possessions=[]
@@ -83,7 +83,7 @@ for index,link in enumerate(links):
             attendance = attendance.group()
             attendances.append(attendance)
             stadiums.append(stadium)
-        day.append(time[0:6])
+        clock.append(time[0:6])
         html_text = requests.get(sky+temp).text
         soup = BeautifulSoup(html_text, 'lxml')
         body=soup.find("div",{"class":"sdc-site-concertina-block__body","id":"match-stats"})
@@ -126,14 +126,14 @@ print(len(attendances))
 #
 with open("liverpool.csv","w",newline='') as file:
     wr= csv.writer(file)
-    wr.writerow(["Date","Competition","day","stadium","attendance","Home Team","Goals Home","Away Goals","Away Team","home_possessions","away_possessions","home_shots","away_shots","home_on","away_on","home_off",
+    wr.writerow(["Date","Competition","clock","stadium","attendance","Home Team","Goals Home","Away Goals","Away Team","home_possessions","away_possessions","home_shots","away_shots","home_on","away_on","home_off",
                  "away_off","home_blocked","away_blocked","home_pass","away_pass",
                   "home_chances","away_chances","home_corners","away_corners","home_offside","away_offside",
                  "home_tackles","away_tackles","home_duels","away_duels","home_saves","away_saves","home_fouls",
                  "away_fouls","home_yellow","away_yellow","home_red","away_red","links",])
 
     for i in range(len(home_team)):
-        wr.writerow([dates[i],competitions[i],day[i],stadiums[i],attendances[i],home_team[i],goals_home[i],away_team[i],goals_away[i],home_possessions[i],away_possessions[i],home_shots[i],away_shots[i],home_on[i],
+        wr.writerow([dates[i],competitions[i],clock[i],stadiums[i],attendances[i],home_team[i],goals_home[i],away_team[i],goals_away[i],home_possessions[i],away_possessions[i],home_shots[i],away_shots[i],home_on[i],
                      away_on[i],home_off[i],away_off[i],home_blocked[i],away_blocked[i],home_pass[i],away_pass[i],
                 home_chances[i],away_chances[i],home_corners[i],away_corners[i],home_offside[i],away_offside[i],home_tackles[i],
                      away_tackles[i],home_duels[i],away_duels[i],home_saves[i],away_saves[i],home_fouls[i],away_fouls[i],home_yellow[i],away_yellow[i],home_red[i],away_red[i],links[i]])
