@@ -20,14 +20,14 @@ stadiums=[]
 attendances=[]
 time=[]
 day=[]
-home_possession=[]
-away_possession=[]
+home_possessions=[]
+away_possessions=[]
 home_shots=[]
 away_shots=[]
 home_on=[]
 away_on=[]
 home_off=[]
-away_on=[]
+away_off=[]
 home_blocked=[]
 away_blocked=[]
 home_pass=[]
@@ -47,7 +47,9 @@ away_saves=[]
 home_fouls=[]
 away_fouls=[]
 home_yellow=[]
+away_yellow=[]
 home_red=[]
+away_red=[]
 pattern = r'\d{1,3}(?:,\d{3})*'
 
 
@@ -64,30 +66,74 @@ for y in competition:
     competitions.append(y.text)
 
 for index,link in enumerate(links):
-    if index != 7 :
+        print(index)
         html_text = requests.get(link).text
         soup = BeautifulSoup(html_text, 'lxml')
         temp = soup.find('a',{"class":"sdc-site-localnav__item-link","aria-current":"true","data-role":"nav-item-links"}).attrs['href'].replace("report","stats")
         header=soup.find("div",{"class":"sdc-site-match-header__detail"})
         time = header.find("time",{"class":"sdc-site-match-header__detail-time"}).text
-        stadium = header.find("span",{"class":"sdc-site-match-header__detail-venue sdc-site-match-header__detail-venue--with-seperator"}).text
-        attendance = header.find("span",{"class":"sdc-site-match-header__detail-attendance"}).text
-        attendance = re.search(pattern, attendance)
-        attendance = attendance.group()
-        attendances.append(attendance)
-        stadiums.append(stadium)
+        try:
+            stadium = header.find("span",{"class":"sdc-site-match-header__detail-venue sdc-site-match-header__detail-venue--with-seperator"}).text
+            attendance = header.find("span",{"class":"sdc-site-match-header__detail-attendance"}).text
+        except AttributeError:
+            stadiums.append("Nan")
+            attendances.append("Nan")
+        else:
+            attendance = re.search(pattern, attendance)
+            attendance = attendance.group()
+            attendances.append(attendance)
+            stadiums.append(stadium)
         day.append(time[0:6])
         html_text = requests.get(sky+temp).text
         soup = BeautifulSoup(html_text, 'lxml')
-        stats=soup.find("div",{"class":"sdc-site-concertina-block__body","id":"match-stats"})
+        body=soup.find("div",{"class":"sdc-site-concertina-block__body","id":"match-stats"})
+        stats=body.find_all("div",{"class":"sdc-site-match-stats__stats"})
+        home_possessions.append(stats[0].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_possessions.append(stats[0].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_shots.append(stats[1].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_shots.append(stats[1].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_on.append(stats[2].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_on.append(stats[2].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_off.append(stats[3].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_off.append(stats[3].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_blocked.append(stats[4].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_blocked.append(stats[4].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_pass.append(stats[5].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_pass.append(stats[5].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_chances.append(stats[6].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_chances.append(stats[6].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_corners.append(stats[7].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_corners.append(stats[7].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_offside.append(stats[8].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_offside.append(stats[8].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_tackles.append(stats[9].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_tackles.append(stats[9].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_duels.append(stats[10].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_duels.append(stats[10].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_saves.append(stats[11].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_saves.append(stats[11].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_fouls.append(stats[12].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_fouls.append(stats[12].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_yellow.append(stats[14].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_yellow.append(stats[14].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
+        home_red.append(stats[15].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
+        away_red.append(stats[15].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
 
-
-
-
-
+print(len(date))
+print(len(time))
+print(len(stadiums))
+print(len(attendances))
+#
 with open("liverpool.csv","w",newline='') as file:
     wr= csv.writer(file)
-    wr.writerow(["Date","Competition","Home Team","Goals Home","Away Goals","Away Team","links"])
+    wr.writerow(["Date","Competition","day","stadium","attendance","Home Team","Goals Home","Away Goals","Away Team","home_possessions","away_possessions","home_shots","away_shots","home_on","away_on","home_off",
+                 "away_off","home_blocked","away_blocked","home_pass","away_pass",
+                  "home_chances","away_chances","home_corners","away_corners","home_offside","away_offside",
+                 "home_tackles","away_tackles","home_duels","away_duels","home_saves","away_saves","home_fouls",
+                 "away_fouls","home_yellow","away_yellow","home_red","away_red","links",])
 
     for i in range(len(home_team)):
-        wr.writerow([dates[i],competitions[i],home_team[i],goals_home[i],away_team[i],goals_away[i],links[i]])
+        wr.writerow([dates[i],competitions[i],day[i],stadiums[i],attendances[i],home_team[i],goals_home[i],away_team[i],goals_away[i],home_possessions[i],away_possessions[i],home_shots[i],away_shots[i],home_on[i],
+                     away_on[i],home_off[i],away_off[i],home_blocked[i],away_blocked[i],home_pass[i],away_pass[i],
+                home_chances[i],away_chances[i],home_corners[i],away_corners[i],home_offside[i],away_offside[i],home_tackles[i],
+                     away_tackles[i],home_duels[i],away_duels[i],home_saves[i],away_saves[i],home_fouls[i],away_fouls[i],home_yellow[i],away_yellow[i],home_red[i],away_red[i],links[i]])
