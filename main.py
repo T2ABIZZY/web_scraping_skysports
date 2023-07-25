@@ -2,12 +2,14 @@ from bs4 import BeautifulSoup
 import requests
 import csv
 import re
+from selenium import webdriver
 
-html_text=requests.get('https://www.skysports.com/liverpool-results/2022-23').text
+
+html_text=requests.get('https://www.skysports.com/premier-league-results/2022-23').text
 soup= BeautifulSoup(html_text,'lxml')
 matches = soup.find_all('div', class_='fixres__item')
-date = soup.find_all('h4','fixres__header2')
-competition = soup.find_all('h5','fixres__header3')
+# date = soup.find_all('h4','fixres__header2')
+# competition = soup.find_all('h5','fixres__header3')
 sky="https://www.skysports.com"
 home_team=[]
 away_team=[]
@@ -60,10 +62,10 @@ for match in matches:
     goals_home.append(matches_results.find_all('span','matches__teamscores-side')[0].text.strip())
     goals_away.append(matches_results.find_all('span','matches__teamscores-side')[1].text.strip())
     links.append(match.find('a').attrs['href'])
-for x in date:
-    dates.append(x.text)
-for y in competition:
-    competitions.append(y.text)
+# for x in date:
+#     dates.append(x.text)
+# for y in competition:
+#     competitions.append(y.text)
 
 for index,link in enumerate(links):
         print(index)
@@ -119,10 +121,7 @@ for index,link in enumerate(links):
         home_red.append(stats[15].find("div",{"class":"sdc-site-match-stats__stats-home"}).span.span.text)
         away_red.append(stats[15].find("div",{"class":"sdc-site-match-stats__stats-away"}).span.span.text)
 
-print(len(date))
-print(len(time))
-print(len(stadiums))
-print(len(attendances))
+
 #
 with open("liverpool.csv","w",newline='') as file:
     wr= csv.writer(file)
